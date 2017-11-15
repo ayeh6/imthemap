@@ -72,4 +72,59 @@ void Graph::inputStack(int v, bool visited[], stack<int> &Stack)
 	Stack.push(v);
 }
 
+void Graph::printSCC()
+{
+	stack<int> Stack;
 
+	bool *visited = new bool[vert];
+	for(int i = 0; i < vert; i++)
+	{
+		visited[i] = false;
+	}
+
+	for(int i = 0; i < vert; i++)
+	{
+		if(visited[i] == false)
+		{
+			inputStack(i,visited,Stack);
+		}
+	}
+
+	Graph G = getTranspose();
+
+	for(int i = 0; i < vert; i++)
+	{
+		visited[i] = false;
+	}
+
+	while(Stack.empty() == false)
+	{
+		int v = Stack.top();
+		cout << "top of stack: " << v << endl;
+		Stack.pop();
+
+		if(visited[v] == false)
+		{
+			G.printOrder(v,visited);
+			cout << endl;
+		}
+	}
+}
+
+int main()
+{
+	int numV;
+	int numE;
+	int v1, v2;
+	cin >> numV;
+	cin >> numE;
+	Graph gr(numV);
+	for(int i = 0; i < numE; i++)
+	{
+		cin >> v1;
+		cin >> v2;
+		gr.addEdge(v1,v2);
+	}
+	gr.printSCC();
+
+}
