@@ -3,33 +3,34 @@
 #include <climits>
 using namespace std;
 
-void DFS(vector<int> graph[], vector<int> &vertice, int i, bool visit[])
+void DFS(vector<int> graph[], vector<int> &vertice, int a, bool visit[])
 {
-	visit[i] = true;
-	for(int j = 0; j < graph[i].size(); j++)
+	visit[a] = true;
+	for(int i = 0; i < graph[a].size(); i++)
 	{
-		if(!visit[graph[i][j]])
+		if(!visit[graph[a][i]])
 		{
-			DFS(graph, vertice, graph[i][j],visit);
+			DFS(graph, vertice, graph[a][i],visit);
 		}
 	}
-	vertice.push_back(i);
+	vertice.push_back(a);
 }
 
 int main() {
 	int vert;
 	int edge;
+
+	//input num of vertices and edges
 	cin >> vert;
 	cin >> edge;
-	int output[vert];
 
+	int output[vert];
 	vector<int> adjacent[edge];
 	vector<int> vertices[vert];
 	vector<int> order;
 	vector<int> temp;
 	vector< vector<int> > StrongConComp;
 	bool visit[vert] = {0};
-
 
 	for(int i = 0; i < vert; i++)
 	{
