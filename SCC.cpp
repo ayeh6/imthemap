@@ -1,192 +1,134 @@
 #include <iostream>
-#include <stack>
-#include <list>
+#include <vector>
 #include <climits>
 using namespace std;
 
-int wow;
-int aye;
-
-class Graph
+void DFS(vector<int> graph[], vector<int> &res, int i, bool visit[])
 {
+	visit[i] = true;
+	for(int j = 0; j < graph[i].size(); j++)
+	{
+		if(!visit[graph[i][j]])
+		{
+			DFS(graph, res, graph[i][j],visit);
+		}
+	}
+	res.push_back(i);
+}
+
+int main() {
 	int vert;
-	int lowest;
-	bool boolL;
-	list<int> *edge;
-	int output[];
+	int edge;
+	cin >> vert;
+	cin >> edge;
+	int output[vert];
 
-	void inputStack(int v, bool visited[], stack<int> &Stack);
-	void printOrder(int v, bool visited[],bool boolL);
+	vector<int> adjacent[edge];
+	vector<int> vertices[vert];
+	vector<int> order;
+	vector<int> temp;
+	vector< vector<int> > StrongConComp;
+	bool visit[vert] = {0};
 
-public:
-	Graph(int vert);
-	void addEdge(int v1, int v2);
-	void printSCC();
-	Graph getTranspose();
-};
-
-Graph::Graph(int vert)
-{
-	this->vert = vert;
-	output[vert];
-	edge = new list<int>[vert];
-}
-
-void Graph::printOrder(int v, bool visited[], bool boolL)
-{
-	visited[v] = true;
-	cout << v << " ";
-	wow++;
-	output[aye] = v;
-	aye++;
-	list<int>::iterator i;
-	for(i = edge[v].begin(); i != edge[v].end(); ++i)
-	{
-		if(!visited[*i])
-		{
-			printOrder(*i,visited,boolL);
-		}
-	}
-}
-
-Graph Graph::getTranspose()
-{
-	Graph g(vert);
-	for(int v = 0; v < vert; v++)
-	{
-		list<int>::iterator i;
-		for(i = edge[v].begin(); i != edge[v].end(); ++i)
-		{
-			//cout << "v is: " << v << " i is: " << *i << endl;
-			g.edge[*i].push_back(v);
-		}
-	}
-	return g;
-}
-
-void Graph::addEdge(int v1, int v2)
-{
-	edge[v1].push_back(v2);
-}
-
-void Graph::inputStack(int v, bool visited[], stack<int> &Stack)
-{
-	visited[v] = true;
-	list<int>::iterator i;
-	for(i = edge[v].begin(); i != edge[v].end(); ++i)
-	{
-		if(!visited[*i])
-		{
-			inputStack(*i, visited, Stack);
-		}
-	}
-	Stack.push(v);
-}
-
-void Graph::printSCC()
-{
-	stack<int> Stack;
-	int num[vert];
-	int actual[vert];
-	for(int i = 0; i < vert; i++)
-	{
-		num[i] = 0;
-	}
-	wow = 0;
-	aye = 0;
-	int low = INT_MAX;
-	bool *visited = new bool[vert];
-	//cout << "vert is: " << vert << endl;
-	for(int i = 0; i < vert; i++)
-	{
-		visited[i] = false;
-	}
 
 	for(int i = 0; i < vert; i++)
 	{
-		if(visited[i] == false)
-		{
-			inputStack(i,visited,Stack);
-		}
+		//adds each index(vertice) to the array
+		output[i] = i;
 	}
 
-	Graph G = getTranspose();
-
-	for(int i = 0; i < vert; i++)
+	int v1;
+	int v2;
+	for(int i = 0; i < edge; i++)
 	{
-		visited[i] = false;
-	}
-	int k = 0;
-	while(Stack.empty() == false)
-	{
-		int v = Stack.top();
-		boolL = false;
-		//cout << "top of stack: " << v << endl;
-		Stack.pop();
-
-		if(visited[v] == false)
-		{
-			G.printOrder(v,visited,boolL);
-			num[k] = wow;
-			k++;
-			wow = 0;
-			cout << endl;
-		}
-	}
-	cout << "made it through while" << endl;
-	for(int i = 0; i < vert; i++)
-	{
-		//cout << num[i] << endl;
-	}
-	//cout << endl;
-	for(int i = 0; i < vert; i++)
-	{
-		//cout << G.output[i] << endl;
-	}
-	int a = 0;
-	int b = 0;
-	int c = 0;
-	while(num[a] != 0)
-	{
-		cout << "its here" << endl;
-		low = INT_MAX;
-		for(int i = 0; i < num[a]; i++)
-		{
-			if(low > G.output[b])
-			{
-				//cout << "low changes to " << G.output[b] << endl;
-				low = G.output[b];
-			}
-			b++;
-		}
-		for(int i = 0; i < num[a]; i++)
-		{
-			actual[G.output[c]] = low;
-			c++;
-		}
-		a++;
-	}
-	for(int i=0; i<vert; i++)
-	{
-		cout << actual[i] << endl;
-	}
-	//cout << endl;
-}
-
-int main()
-{
-	int numV;
-	int numE;
-	int v1, v2;
-	cin >> numV;
-	cin >> numE;
-	Graph gr(numV);
-	for(int i = 0; i < numE; i++)
-	{
+		//adds each edge between vertices
 		cin >> v1;
 		cin >> v2;
-		gr.addEdge(v1,v2);
+		adjacent[v1].push_back(v2);
 	}
-	gr.printSCC();
 
+	for(int i = 0; i < vert; i++)
+	{
+		//reset visits
+		visit[i] = false;
+	}
+
+	for(int i = 0; i < vert; i++)
+	{
+		if(!visit[i])
+		{
+			//perform depth first search
+			DFS(adjacent, order, i, visit);
+		}
+	}
+
+	for(int i = 0; i < vert; i++)
+	{
+		for(int j = 0; j < adjacent[i].size(); j++)
+		{
+			vertices[adjacent[i][j]].push_back(i);
+		}
+	}
+
+	for(int i = 0; i < vert; i++)
+	{
+		//reset visited array
+		visit[i] = false;
+	}
+
+	//reverse the order of order
+	temp = order;
+	order.clear();
+	while(!temp.empty())
+	{
+		order.push_back(temp.back());
+		temp.pop_back();
+	}
+
+	for(int i = 0; i < order.size(); i++)
+	{
+		if(!visit[order[i]])
+		{
+			vector<int> component;
+			DFS(vertices, component, order[i], visit);
+			StrongConComp.push_back(component);
+		}
+	}
+
+	int comp;
+	int min;
+	int temp1;
+	for(int i = 0; i < StrongConComp.size(); i++)
+	{
+		for(int j = 0; j < StrongConComp[i].size(); j++)
+		{
+			comp = StrongConComp[i][j];
+			for(int k = 0; k < vert; k++)
+			{
+				if(output[k] == comp)
+				{
+					//find the minimum of the strong connected group
+					min = INT_MAX;
+					for(int m = 0; m < StrongConComp[i].size(); m++)
+					{
+						temp1 = StrongConComp[i].at(m);
+						if(min > temp1)
+						{
+							min = temp1;
+						}
+					}
+					output[k] = min;
+
+				}
+			}
+		}
+	}
+
+	//final output
+	for(int i = 0; i < vert; i++)
+	{
+		cout << output[i] << endl;
+	}
+
+	return 0;
 }
