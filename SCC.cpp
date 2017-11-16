@@ -3,17 +3,17 @@
 #include <climits>
 using namespace std;
 
-void DFS(vector<int> graph[], vector<int> &res, int i, bool visit[])
+void DFS(vector<int> graph[], vector<int> &vertice, int i, bool visit[])
 {
 	visit[i] = true;
 	for(int j = 0; j < graph[i].size(); j++)
 	{
 		if(!visit[graph[i][j]])
 		{
-			DFS(graph, res, graph[i][j],visit);
+			DFS(graph, vertice, graph[i][j],visit);
 		}
 	}
-	res.push_back(i);
+	vertice.push_back(i);
 }
 
 int main() {
